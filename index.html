@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5bd35">
+  <meta name="description" content="Bamboo Money - pencatat keuangan pribadi">
+  <title>Bamboo Money</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" aria-label="Buka menu">☰</button>
+      <div class="brand">
+        <img src="logo.svg" alt="" class="brand-logo">
+        <div><strong>Bamboo Money</strong><small>Kelola uang dengan mudah</small></div>
+      </div>
+      <button class="icon-btn" id="quickAdd" aria-label="Tambah transaksi">＋</button>
+    </header>
+
+    <div class="scrim" id="scrim"></div>
+    <aside class="drawer" id="drawer" aria-label="Menu navigasi">
+      <div class="drawer-head">
+        <img src="logo.svg" alt="Logo Bamboo Money">
+        <div><strong>Bamboo Money</strong><small>Keuangan lebih teratur 🎋</small></div>
+        <button class="icon-btn close-drawer" id="closeDrawer" aria-label="Tutup menu">×</button>
+      </div>
+      <nav class="nav-list">
+        <button class="nav-item active" data-page="dashboard">🏠 <span>Dashboard</span></button>
+        <button class="nav-item" data-page="transactions">🧾 <span>Transaksi</span></button>
+        <button class="nav-item" data-page="income">📥 <span>Pemasukan</span></button>
+        <button class="nav-item" data-page="expense">🛍️ <span>Pengeluaran</span></button>
+        <button class="nav-item" data-page="transfer">🔁 <span>Transfer Bank / Dompet</span></button>
+        <button class="nav-item" data-page="investment">🌱 <span>Investasi</span></button>
+        <button class="nav-item" data-page="history">🗓️ <span>Riwayat Bulanan</span></button>
+        <button class="nav-item" data-page="settings">⚙️ <span>Pengaturan & Cadangan</span></button>
+      </nav>
+      <div class="drawer-note">Sedikit demi sedikit, keuangan jadi lebih rapi.</div>
+    </aside>
+
+    <main id="mainContent" class="main-content">
+      <section class="page active" id="page-dashboard">
+        <div class="hello-row"><div><p class="eyebrow">RINGKASAN KEUANGAN</p><h1>Halo! 👋</h1><p class="muted" id="todayLabel"></p></div><div class="mascot">🐼</div></div>
+        <article class="balance-card">
+          <div class="balance-top"><span>Total Saldo Utama</span><span class="coin">✦</span></div>
+          <div class="big-balance" id="totalBalance">Rp0</div>
+          <div class="balance-split">
+            <div><span>🏦 Saldo Bank</span><strong id="bankBalance">Rp0</strong></div>
+            <div><span>👛 Saldo Dompet</span><strong id="walletBalance">Rp0</strong></div>
+          </div>
+        </article>
+        <div class="section-heading"><h2>Ringkasan bulan ini</h2><span class="month-chip" id="currentMonth"></span></div>
+        <div class="stat-grid">
+          <article class="stat-card income-stat"><span>↗ Pemasukan</span><strong id="monthIncome">Rp0</strong></article>
+          <article class="stat-card expense-stat"><span>↘ Pengeluaran</span><strong id="monthExpense">Rp0</strong></article>
+        </div>
+        <article class="card investment-teaser">
+          <div><p class="eyebrow">KANTONG INVESTASI</p><h2 id="dashboardInvest">Rp0</h2><p class="muted">Terpisah dari saldo utama</p></div>
+          <div class="plant">🌱</div>
+          <button class="text-link" data-go="investment">Lihat investasi →</button>
+        </article>
+        <div class="section-heading"><h2>Transaksi terbaru</h2><button class="text-link" data-go="transactions">Lihat semua →</button></div>
+        <div id="recentList" class="transaction-list"></div>
+      </section>
+
+      <section class="page" id="page-transactions">
+        <div class="page-title"><p class="eyebrow">CATATAN KEUANGAN</p><h1>Transaksi</h1><p class="muted">Semua pemasukan, pengeluaran, dan transfer.</p></div>
+        <div class="filter-row"><label for="txMonth">Bulan & tahun</label><input type="month" id="txMonth"></div>
+        <div class="stat-grid compact">
+          <article class="stat-card income-stat"><span>Total masuk</span><strong id="txIncome">Rp0</strong></article>
+          <article class="stat-card expense-stat"><span>Total keluar</span><strong id="txExpense">Rp0</strong></article>
+        </div>
+        <div id="allTransactions" class="transaction-list"></div>
+      </section>
+
+      <section class="page" id="page-income">
+        <div class="page-title"><p class="eyebrow">UANG MASUK</p><h1>Tambah pemasukan</h1><p class="muted">Pilih uang masuk ke bank atau dompet.</p></div>
+        <form id="incomeForm" class="form-card">
+          <label>Tanggal transaksi<input type="date" name="date" required></label>
+          <label>Sumber pemasukan<input name="title" placeholder="Contoh: Gaji bulanan" maxlength="60" required></label>
+          <label>Jumlah pemasukan (Rp)<input name="amount" type="number" min="1" step="1" placeholder="Contoh: 3000000" required></label>
+          <label>Masuk ke<select name="account"><option value="bank">🏦 Bank</option><option value="wallet">👛 Dompet</option></select></label>
+          <label>Catatan (opsional)<textarea name="note" rows="2" placeholder="Catatan tambahan"></textarea></label>
+          <button class="primary-btn" type="submit">Simpan pemasukan</button>
+        </form>
+      </section>
+
+      <section class="page" id="page-expense">
+        <div class="page-title"><p class="eyebrow">UANG KELUAR</p><h1>Tambah pengeluaran</h1><p class="muted">Saldo akan dikurangi dari sumber yang dipilih.</p></div>
+        <form id="expenseForm" class="form-card">
+          <label>Tanggal transaksi<input type="date" name="date" required></label>
+          <label>Beli apa / keperluan<input name="title" placeholder="Contoh: Beli cilok" maxlength="60" required></label>
+          <label>Jumlah pengeluaran (Rp)<input name="amount" type="number" min="1" step="1" placeholder="Contoh: 10000" required></label>
+          <label>Gunakan saldo<select name="account"><option value="wallet">👛 Dompet</option><option value="bank">🏦 Bank</option></select></label>
+          <label>Catatan (opsional)<textarea name="note" rows="2" placeholder="Catatan tambahan"></textarea></label>
+          <button class="primary-btn" type="submit">Simpan pengeluaran</button>
+        </form>
+      </section>
+
+      <section class="page" id="page-transfer">
+        <div class="page-title"><p class="eyebrow">PINDAH TEMPAT UANG</p><h1>Transfer</h1><p class="muted">Transfer internal tidak mengubah total saldo utama.</p></div>
+        <form id="transferForm" class="form-card">
+          <div class="transfer-visual"><span>🏦</span><b>→</b><span>👛</span></div>
+          <label>Dari<select name="from"><option value="bank">🏦 Bank</option><option value="wallet">👛 Dompet</option></select></label>
+          <label>Ke<select name="to"><option value="wallet">👛 Dompet</option><option value="bank">🏦 Bank</option></select></label>
+          <label>Tanggal transfer<input type="date" name="date" required></label>
+          <label>Jumlah transfer (Rp)<input name="amount" type="number" min="1" step="1" placeholder="Contoh: 50000" required></label>
+          <label>Catatan (opsional)<input name="note" placeholder="Contoh: Isi dompet"></label>
+          <button class="primary-btn" type="submit">Transfer sekarang</button>
+          <p class="helper">Saldo sumber berkurang dan saldo tujuan bertambah. Total uang tetap sama.</p>
+        </form>
+      </section>
+
+      <section class="page" id="page-investment">
+        <div class="page-title"><p class="eyebrow">ASET TERPISAH</p><h1>Investasi 🌱</h1><p class="muted">Tidak digabungkan dengan total saldo utama.</p></div>
+        <article class="investment-card">
+          <span>Total saldo investasi</span><strong id="investBalance">Rp0</strong><small id="investCount">0 kali setoran tercatat</small>
+          <div class="investment-art">🎋　🪙　🌱</div>
+        </article>
+        <form id="investForm" class="form-card">
+          <h2>Catat setoran investasi</h2>
+          <label>Tanggal setoran<input type="date" name="date" required></label>
+          <label>Nama investasi / keterangan<input name="title" placeholder="Contoh: Setoran investasi bulanan" required maxlength="60"></label>
+          <label>Jumlah setoran (Rp)<input name="amount" type="number" min="1" step="1" placeholder="Contoh: 100000" required></label>
+          <label>Ambil dana dari<select name="account"><option value="bank">🏦 Bank</option><option value="wallet">👛 Dompet</option></select></label>
+          <button class="primary-btn" type="submit">Tambah setoran investasi</button>
+          <p class="helper">Setoran mengurangi saldo bank/dompet, lalu menambah saldo investasi terpisah.</p>
+        </form>
+        <div class="section-heading"><h2>Riwayat investasi</h2></div>
+        <div id="investmentList" class="transaction-list"></div>
+      </section>
+
+      <section class="page" id="page-history">
+        <div class="page-title"><p class="eyebrow">ARSIP BULANAN</p><h1>Riwayat bulanan</h1><p class="muted">Pilih bulan dan tahun untuk melihat transaksi sebelumnya.</p></div>
+        <div class="filter-row"><label for="historyMonth">Pilih bulan</label><input type="month" id="historyMonth"></div>
+        <div class="stat-grid">
+          <article class="stat-card income-stat"><span>↗ Pemasukan</span><strong id="historyIncome">Rp0</strong></article>
+          <article class="stat-card expense-stat"><span>↘ Pengeluaran</span><strong id="historyExpense">Rp0</strong></article>
+        </div>
+        <div class="history-summary card"><span>Jumlah transaksi</span><strong id="historyCount">0</strong></div>
+        <div id="historyList" class="transaction-list"></div>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="page-title"><p class="eyebrow">PREFERENSI</p><h1>Pengaturan</h1><p class="muted">Kelola data aplikasi di perangkat ini.</p></div>
+        <div class="form-card">
+          <h2>Saldo awal</h2>
+          <p class="helper">Atur saldo awal bank dan dompet. Pengaturan ini hanya digunakan sebelum transaksi pertama dibuat.</p>
+          <label>Saldo awal bank (Rp)<input id="initialBank" type="number" min="0" step="1"></label>
+          <label>Saldo awal dompet (Rp)<input id="initialWallet" type="number" min="0" step="1"></label>
+          <button class="primary-btn" id="saveOpening">Simpan saldo awal</button>
+        </div>
+        <div class="form-card">
+          <h2>Cadangan data</h2>
+          <p class="helper">Unduh salinan data transaksi agar bisa disimpan. Impor file cadangan untuk memulihkan data.</p>
+          <button class="secondary-btn" id="exportData">⬇ Unduh cadangan data</button>
+          <label class="file-label">Impor cadangan JSON<input id="importData" type="file" accept="application/json,.json"></label>
+        </div>
+        <div class="form-card">
+          <h2>Info aplikasi</h2>
+          <p class="helper">Bamboo Money menyimpan data di penyimpanan browser perangkat ini. Data tidak otomatis tersinkron ke perangkat lain.</p>
+        </div>
+      </section>
+    </main>
+    <footer class="bottom-nav">
+      <button class="bottom-item active" data-page="dashboard"><span>⌂</span>Beranda</button>
+      <button class="bottom-item" data-page="transactions"><span>▤</span>Riwayat</button>
+      <button class="bottom-add" id="bottomAdd">＋</button>
+      <button class="bottom-item" data-page="investment"><span>♧</span>Investasi</button>
+      <button class="bottom-item" id="bottomMenu"><span>☰</span>Menu</button>
+    </footer>
+  </div>
+
+  <div class="modal-backdrop" id="quickModal">
+    <div class="quick-sheet">
+      <div class="sheet-handle"></div><h2>Tambah catatan</h2>
+      <button class="quick-option" data-go="income">📥　Pemasukan</button>
+      <button class="quick-option" data-go="expense">🛍️　Pengeluaran</button>
+      <button class="quick-option" data-go="transfer">🔁　Transfer</button>
+      <button class="quick-option" data-go="investment">🌱　Setor investasi</button>
+      <button class="secondary-btn" id="closeQuick">Tutup</button>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
